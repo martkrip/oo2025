@@ -38,4 +38,16 @@ public class Product {
     private double price;
     private String image; // .jrpg
     private boolean active;
+
+// public void setPrice(double price) {
+//              this.price = prize
+//              System.out.printIn("Kasutaja xxx muutis hinda. ID: " + this.id);
+//    }
 }
+// kui on väikse tähega
+// long
+// char
+// double
+// boolean
+
+// String ei ole primitiivne väärtus. Seega ei saa tema väärtusi kontrollida võrdlusmärgiga
