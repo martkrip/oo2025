@@ -14,6 +14,10 @@ public class ProductController {
     @Autowired
     ProductRepository productRepository;
 
+    // Autowired all joon, mis soovitab kasutada seda (aga teeb sama välja):
+    // public ProductController (ProductRepository productRepository) {
+    // this.productRepository = productRepository;
+// }
     // localhost:8080/products
     @GetMapping("products")
     public List<Product> getproducts() {

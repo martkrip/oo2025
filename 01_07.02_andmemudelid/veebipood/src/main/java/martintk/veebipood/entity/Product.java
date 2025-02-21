@@ -1,9 +1,6 @@
 package martintk.veebipood.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -39,6 +36,18 @@ public class Product {
     private String image; // .jrpg
     private boolean active;
 
+    //Parem pool tähistab kas on list<> või ainsus
+    //Vasak pool tähistab kas saan taaskasutada
+
+    // @ManyToMany
+    // @ManyToOne <-
+    // @OneToMany
+    // @OneToOne <-
+
+    // OneToOne -> User <-> Contact
+
+    @ManyToOne //kuna ei ole list siis ei saa many to many või one to many kasutada
+    private Category category;
 // public void setPrice(double price) {
 //              this.price = prize
 //              System.out.printIn("Kasutaja xxx muutis hinda. ID: " + this.id);
