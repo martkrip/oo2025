@@ -28,12 +28,13 @@ public class ResultController {
         if (result.getEvent() == null || result.getEvent().isBlank()) {
             throw new RuntimeException("ERROR_CANNOT_ADD_EVENT_WITHOUT_NAME");
         }
-        if (result.getEvent().equals("100m") || result.getEvent().equals("400m") || result.getEvent().equals("110m hurdles") || result.getEvent().equals("1500m") ); {
+        if (result.getEvent().equals("100m") || result.getEvent().equals("400m") || result.getEvent().equals("110m hurdles") || result.getEvent().equals("1500m") ) {
             result.setPoints(calculateTrackPoints(result.getResult(), 25.4347, 18, 1.81));
         }
-        if (result.getEvent().equals("Long jump") || result.getEvent().equals("Shot put") || result.getEvent().equals("High jump") || result.getEvent().equals("Discus throw") || result.getEvent().equals("Pole vault") || result.getEvent().equals("Javelin throw")); {
+        if (result.getEvent().equals("Long jump") || result.getEvent().equals("Shot put") || result.getEvent().equals("High jump") || result.getEvent().equals("Discus throw") || result.getEvent().equals("Pole vault") || result.getEvent().equals("Javelin throw")) {
             result.setPoints(calculateFieldPoints(result.getResult(), 0.14354, 220, 1.4));
         }
+        else
         resultRepository.save(result);
         return resultRepository.findAll();
     }

@@ -19,5 +19,5 @@ public class Result {
     private Long id;
     private String event;
     private double result;
-    private double points;
+    private int points;
 }
