@@ -21,7 +21,7 @@ public class ProductController {
     // localhost:8080/products
     @GetMapping("products")
     public List<Product> getproducts() {
-        return productRepository.findAll(); // [] -> SELECT * FROM extrends JpaRepository<Product>
+        return productRepository.findAll(); // [] -> SELECT * FROM extends JpaRepository<Product>
     }
     @PostMapping("products") // POSTMAN rakendus
     public List<Product> addProduct(@RequestBody Product product) {
