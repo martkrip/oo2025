@@ -1,4 +1,4 @@
-package martintk.kumnevoistlus.service;
+/* package martintk.kumnevoistlus.service;
 import martintk.kumnevoistlus.entity.Athlete;
 import martintk.kumnevoistlus.entity.Result;
 import martintk.kumnevoistlus.repository.AthleteRepository;
@@ -38,5 +38,6 @@ public class ResultService {
     int pointsLongJump = resultService.calculateFieldPoints(800, 0.14354, 220, 1.4);
             System.out.println("Long Jump Points: " + pointsLongJump);
 
-
+    int pointsShotput = resultService.calculateFieldPoints(800, 0.14354, 220, 1.4);
 }
+*/
