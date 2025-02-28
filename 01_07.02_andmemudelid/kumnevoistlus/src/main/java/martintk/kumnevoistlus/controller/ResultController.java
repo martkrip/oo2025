@@ -30,11 +30,13 @@ public class ResultController {
         }
         if (result.getEvent().equals("100m") || result.getEvent().equals("400m") || result.getEvent().equals("110m hurdles") || result.getEvent().equals("1500m") ) {
             result.setPoints(calculateTrackPoints(result.getResult(), 25.4347, 18, 1.81));
-        }
+        } else
         if (result.getEvent().equals("Long jump") || result.getEvent().equals("Shot put") || result.getEvent().equals("High jump") || result.getEvent().equals("Discus throw") || result.getEvent().equals("Pole vault") || result.getEvent().equals("Javelin throw")) {
             result.setPoints(calculateFieldPoints(result.getResult(), 0.14354, 220, 1.4));
+        } else {
+            throw new RuntimeException("ERROR_INVALID_EVENT");
         }
-        else
+
         resultRepository.save(result);
         return resultRepository.findAll();
     }
