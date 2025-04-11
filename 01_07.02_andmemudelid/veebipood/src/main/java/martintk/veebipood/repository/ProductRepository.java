@@ -8,7 +8,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
 
-// SEE MÄÄRAB
+//                                                   SEE MÄÄRAB
 public interface ProductRepository extends JpaRepository<Product, Long> {
     // Repository tagastab ainult kas Product, List<Product>
     // on juba sisse kirjutatud:
