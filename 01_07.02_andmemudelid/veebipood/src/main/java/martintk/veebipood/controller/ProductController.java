@@ -101,7 +101,8 @@ public class ProductController {
 //        return filteredProducts;
 //    }
 
-    //localhost:8080/category-products?categoryId=1&page=0&size=2
+    //localhost:8080/category-products?categoryId=1&page=0&size=2&sort=name,asc
+    //localhost:8080/category-products?categoryId=1&page=0&size=2&sort=price,desc
     @GetMapping("/category-products")
     public Page<Product> getCategoryProducts(@RequestParam Long categoryId, Pageable pageable) {
         if (categoryId == -1) {

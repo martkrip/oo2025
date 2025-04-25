@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { Category } from '../models/Category';
 import { Product } from '../models/Product';
+import { Link } from 'react-router-dom';
 
 // React Hook (Reacti erikood)
 // 1. peab importima
@@ -24,6 +25,12 @@ function MainPage() {
   const [productsByPage, setProductsByPage] = useState(1); 
   const [page, setPage] = useState(0);
   const [activeCategory, setActiveCategory] = useState(-1);
+  const productsByPageRef = useRef<HTMLSelectElement>(null); // HTMLi inputiga/selectiga sidumisega
+  // .current? ----> küsimärk tähendab, et TypeScript näeb, et Ref on alguses null ehk tühi
+                                // see tähendab, et tal on 2 väärtuse võimalust
+  // .current.value ----> selle selecti väärtus, mis väljastab alati Stringi
+  // Number() ---> konverdime selle .current.value väärtuse numbriks tagasi
+  const [sort, setSort] = useState("id,asc");
   // let page = 0; kui muudaks hiljem koodis: page = 1, siis ei läheks HTMLi uuendama
   
 
@@ -40,18 +47,19 @@ function MainPage() {
     setPage(currentPage);
     fetch("http://localhost:8080/category-products?categoryId=" + categoryId + 
       "&size=" + productsByPage +
-      "&page=" + currentPage) // currentPage, sest React update-b useState......
+      "&page=" + currentPage +
+      "&sort=" + sort, ) // currentPage, sest React update-b useState......
         .then(res=>res.json())
         .then(json=> {
           setProducts(json.content)
           setTotalProducts(json.totalElements);
           setTotalPages(json.totalPages);
         })
-  }, [productsByPage])
+  }, [productsByPage, sort])
 
   useEffect(() => {
-    showByCategory(-1, 0);
-  }, [showByCategory])
+    showByCategory(activeCategory, 0);
+  }, [showByCategory, activeCategory])
 
   // const showByCategory =() => {} (uus versioon)
 
@@ -59,14 +67,14 @@ function MainPage() {
     showByCategory(activeCategory, newPage);
   }
 
-  const productsByPageRef = useRef<HTMLSelectElement>(null); // HTMLi inputiga/selectiga sidumisega
-                                            // .current? ----> küsimärk tähendab, et TypeScript näeb, et Ref on alguses null ehk tühi
-                                                                          // see tähendab, et tal on 2 väärtuse võimalust
-                                            // .current.value ----> selle selecti väärtus, mis väljastab alati Stringi
-                                            // Number() ---> konverdime selle .current.value väärtuse numbriks tagasi
-
   return (
     <div>
+      <button onClick={() => setSort("id,asc")}>Sorteeri vanemad enne</button>
+      <button onClick={() => setSort("id,desc")}>Sorteeri uuemad enne</button>
+      <button onClick={() => setSort("name,asc")}>Sorteeri A-Z</button>
+      <button onClick={() => setSort("name,desc")}>Sorteeri Z-A</button>
+      <button onClick={() => setSort("price,asc")}>Sorteeri odavamad enne</button>
+      <button onClick={() => setSort("price,desc")}>Sorteeri kallimad enne</button>
       <select ref={productsByPageRef}
               onChange={() => setProductsByPage(Number(productsByPageRef.current?.value))}>
         <option>1</option>
@@ -88,6 +96,9 @@ function MainPage() {
         <div>{products.price}</div>
         <div>{products.image}</div>
         <div>{products.category?.name}</div>
+        <Link to={"/product/" + products.id}>
+        <button>Vt lähemalt</button>
+        </Link>
         </div> )}
         <button disabled={page === 0}onClick={() => updatePage(page - 1)}>Eelmine</button>
         <span>{page + 1}</span>
