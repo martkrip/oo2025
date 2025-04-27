@@ -15,7 +15,7 @@ import java.util.List;
 @Entity
 public class Result {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String event;
     private double result;

@@ -21,6 +21,6 @@ public class Athlete {
     private String country;
     private double age;
 
-    @ManyToMany
+    @OneToMany
     private List<Result> results;
 }

@@ -46,6 +46,8 @@ public class ResultController {
     public int calculateFieldPoints(double result, double A, double B, double C) {
         return (int) Math.floor(A * (result - B) * C);
     }
+    public int calculateAllPoints(double result, double A, double B, double C) {
 
+    }
 
     }
