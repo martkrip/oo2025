@@ -1,12 +1,10 @@
 package martintk.kumnevoistlus.controller;
+import martintk.kumnevoistlus.entity.Athlete;
 import martintk.kumnevoistlus.entity.Result;
 import martintk.kumnevoistlus.repository.AthleteRepository;
 import martintk.kumnevoistlus.repository.ResultRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -46,8 +44,13 @@ public class ResultController {
     public int calculateFieldPoints(double result, double A, double B, double C) {
         return (int) Math.floor(A * (result - B) * C);
     }
-    public int calculateAllPoints(double result, double A, double B, double C) {
-
+    @GetMapping("athlete/total-points")
+    public int getAthleteTotalPoints(@RequestParam Long athleteId) {
+        Athlete athlete = athleteRepository.findById(athleteId)
+                .orElseThrow(() -> new RuntimeException("Athlete not found"));
+        List<Result> results = resultRepository.findByAthlete(athlete);
+        int totalPoints = results.stream().mapToInt(Result::getPoints).sum();
+        return totalPoints;
     }
 
     }
