@@ -15,6 +15,7 @@ function Menu() {
             <Nav.Link as={Link} to="/cart">Cart</Nav.Link>
             <Nav.Link as={Link} to="/arrays">Arrays</Nav.Link>
             <Nav.Link as={Link} to="/orders">Orders</Nav.Link>
+            <Nav.Link as={Link} to="/map">Map</Nav.Link>
             <NavDropdown title="Admin" id="collapsible-nav-dropdown">
               <NavDropdown.Item as={Link} to="/admin/products">Manage Products</NavDropdown.Item>
               <NavDropdown.Item as={Link} to="/admin/categories">
