@@ -1,24 +1,58 @@
 package martintk.kumnevoistlus.controller;
 
 import martintk.kumnevoistlus.entity.Athlete;
+import martintk.kumnevoistlus.entity.Result;
 import martintk.kumnevoistlus.repository.AthleteRepository;
+import martintk.kumnevoistlus.repository.ResultRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 
-@RestController
+@RestController// defines routes for REST API
 public class AthleteController {
 
-    @Autowired
+    @Autowired // repositories are used for database interactions
     AthleteRepository athleteRepository;
 
-    // localhost:8080/athlete
-    @GetMapping("athletes")
-    public List<Athlete> getAthletes() {
-        return athleteRepository.findAll();
+    @Autowired // @autowired injects dependencies into the class automatically
+    ResultRepository resultRepository;
+
+    @GetMapping("athletes") //
+    public List<Map<String, Object>> getAthletes() {
+        List<Athlete> athletes = athleteRepository.findAll(); // retrieves all athletes from the database
+        List<Map<String, Object>> responseList = new ArrayList<>(); // creates an empty list where every element is <map<string, object>>
+
+        for (Athlete athlete : athletes) { // loops through each athlete
+            List<Result> results = resultRepository.findByAthlete(athlete); // fetches results for the athlete
+
+            Map<String, Integer> eventPoints = results.stream() // converts list into a stream for easier processing
+                    .collect(Collectors.toMap( // collects the stream into a map. event names are keys of the map
+                            Result::getEvent,
+                            Result::getPoints
+                    ));
+
+            int totalPoints = eventPoints.values().stream().mapToInt(Integer::intValue).sum(); // calculates total points
+
+            Map<String, Object> athleteData = new HashMap<>(); // creates an map
+            athleteData.put("id", athlete.getId());
+            athleteData.put("name", athlete.getName());
+            athleteData.put("country", athlete.getCountry());
+            athleteData.put("age", athlete.getAge());
+            athleteData.put("results", eventPoints);
+            athleteData.put("totalPoints", totalPoints);
+
+            responseList.add(athleteData);
+        }
+
+        return responseList;
     }
+
 
     @PostMapping("athletes")
     public List<Athlete> addAthlete(@RequestBody Athlete athlete) {
