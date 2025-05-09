@@ -14,12 +14,22 @@
         <module name="veebipood" />
         <module name="kumnevoistlus" />
       </profile>
+      <profile name="Annotation profile for proovikontrolltoo2" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <processorPath useClasspath="false">
+          <entry name="$MAVEN_REPOSITORY$/org/projectlombok/lombok/1.18.38/lombok-1.18.38.jar" />
+        </processorPath>
+        <module name="proovikontrolltoo2" />
+      </profile>
     </annotationProcessing>
   </component>
   <component name="JavacSettings">
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
       <module name="kumnevoistlus" options="-parameters" />
       <module name="libisevkondimine" options="-parameters" />
+      <module name="proovikontrolltoo2" options="-parameters" />
       <module name="veebipood" options="-parameters" />
     </option>
   </component>
