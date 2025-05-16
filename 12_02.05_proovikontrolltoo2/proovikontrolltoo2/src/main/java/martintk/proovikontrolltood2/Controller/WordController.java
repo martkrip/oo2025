@@ -29,18 +29,20 @@ public class WordController {
         return wordRepository.findAll();
     }
 
-    @DeleteMapping("words/{id}")
-    public List<Word> deleteword(@PathVariable Long id) {
-        wordRepository.deleteById(id);
+    @DeleteMapping("/words/{typeid}")
+    public List<Word> deleteword(@PathVariable Long typeid) {
+        wordRepository.deleteById(typeid);
         return wordRepository.findAll();
     }
 
-    @PutMapping("words")
-    public List<Word> updateWord(@RequestBody Word word) {
-        if(word.getTypeid() != null) {
-            throw new RuntimeException("ERROR_CANNOT_UPDATE_WITHOUT_ID");
-        }
-        wordRepository.save(word);
+    @PutMapping("/words/{typeid}")
+    public List<Word> updateWord(@PathVariable Long typeid, @RequestBody Word updatedWord) {
+        Word existingWord = wordRepository.findById(typeid)
+                .orElseThrow(() -> new RuntimeException("ERROR_CANNOT_UPDATE_WITHOUT_WORD"));
+
+        existingWord.setType(updatedWord.getType());
+        existingWord.setDescription(updatedWord.getDescription());
+        wordRepository.save(existingWord);
         return wordRepository.findAll();
     }
     @GetMapping("/words/{id}")

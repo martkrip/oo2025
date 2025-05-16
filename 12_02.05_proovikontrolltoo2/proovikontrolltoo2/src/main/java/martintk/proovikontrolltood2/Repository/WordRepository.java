@@ -5,4 +5,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface WordRepository extends JpaRepository<Word, Long> {
 
+    Long typeid(Long typeid);
 }
