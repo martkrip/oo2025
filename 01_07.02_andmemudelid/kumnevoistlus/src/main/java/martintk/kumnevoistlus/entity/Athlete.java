@@ -21,6 +21,6 @@ public class Athlete {
     private String country;
     private double age;
 
-    @OneToMany(mappedBy = "athlete", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany
     private List<Result> results;
 }

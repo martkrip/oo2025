@@ -78,12 +78,6 @@ public class AthleteController {
         if (athlete.getCountry() == null || athlete.getCountry().isBlank()) {
             throw new RuntimeException("ERROR_COUNTRY_MISSING");
         }
-
-        if (athlete.getResults() == null) {
-            for (Result result : athlete.getResults()) {
-                result.setAthlete(athlete);
-            }
-        }
         athleteRepository.save(athlete);
         return athleteRepository.findAll();
     }
@@ -91,11 +85,6 @@ public class AthleteController {
     public List<Athlete> editAthlete(@RequestBody Athlete athlete) {
         if (athlete.getId() == null) {
             throw new RuntimeException("ERROR_CANNOT_EDIT_WITHOUT_ID");
-        }
-        if (athlete.getResults() != null) {
-            for (Result result : athlete.getResults()) {
-                result.setAthlete(athlete);
-            }
         }
         athleteRepository.save(athlete);
         return athleteRepository.findAll();
