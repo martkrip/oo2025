@@ -5,6 +5,9 @@ import martintk.kumnevoistlus.entity.Result;
 import martintk.kumnevoistlus.repository.AthleteRepository;
 import martintk.kumnevoistlus.repository.ResultRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
@@ -23,23 +26,26 @@ public class AthleteController {
     @Autowired // @autowired injects dependencies into the class automatically
     ResultRepository resultRepository;
 
-    @GetMapping("athletes") //
-    public List<Map<String, Object>> getAthletes() {
-        List<Athlete> athletes = athleteRepository.findAll(); // retrieves all athletes from the database
-        List<Map<String, Object>> responseList = new ArrayList<>(); // creates an empty list where every element is <map<string, object>>
+    @GetMapping("athletes")
+    public Map<String, Object> getAthletes(
+            @RequestParam(required = false) String country,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "5") int size
+    ) {
+        Pageable pageable = PageRequest.of(page, size);
+        Page<Athlete> athletePage = (country != null)
+                ? athleteRepository.findByCountryIgnoreCase(country, pageable)
+                : athleteRepository.findAll(pageable);
 
-        for (Athlete athlete : athletes) { // loops through each athlete
-            List<Result> results = resultRepository.findByAthlete(athlete); // fetches results for the athlete
+        List<Map<String, Object>> responseList = new ArrayList<>();
 
-            Map<String, Integer> eventPoints = results.stream() // converts list into a stream for easier processing
-                    .collect(Collectors.toMap( // collects the stream into a map. event names are keys of the map
-                            Result::getEvent,
-                            Result::getPoints
-                    ));
+        for (Athlete athlete : athletePage.getContent()) {
+            List<Result> results = resultRepository.findByAthlete(athlete);
+            Map<String, Integer> eventPoints = results.stream()
+                    .collect(Collectors.toMap(Result::getEvent, Result::getPoints));
+            int totalPoints = eventPoints.values().stream().mapToInt(Integer::intValue).sum();
 
-            int totalPoints = eventPoints.values().stream().mapToInt(Integer::intValue).sum(); // calculates total points
-
-            Map<String, Object> athleteData = new HashMap<>(); // creates an map
+            Map<String, Object> athleteData = new HashMap<>();
             athleteData.put("id", athlete.getId());
             athleteData.put("name", athlete.getName());
             athleteData.put("country", athlete.getCountry());
@@ -50,9 +56,13 @@ public class AthleteController {
             responseList.add(athleteData);
         }
 
-        return responseList;
-    }
+        Map<String, Object> response = new HashMap<>();
+        response.put("content", responseList);
+        response.put("totalPages", athletePage.getTotalPages());
+        response.put("totalElements", athletePage.getTotalElements());
 
+        return response;
+    }
 
     @PostMapping("athletes")
     public List<Athlete> addAthlete(@RequestBody Athlete athlete) {
@@ -98,4 +108,4 @@ public class AthleteController {
         athleteRepository.save(athlete);
         return athleteRepository.findAll();
     }
-}
+    }
