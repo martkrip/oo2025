@@ -3,6 +3,7 @@ import '../App.css'
 import type { Athlete } from "../models/Athlete";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { useCallback } from 'react';
+import { useRef } from 'react';
 
 function AthletesPage() {
     const [athletes, setAthletes] = useState<Athlete[]>([]);
@@ -10,6 +11,11 @@ function AthletesPage() {
     const [page, setPage] = useState(0);
     const [totalPages, setTotalPages] = useState(0);
     const [athletesPerPage] = useState(5);
+
+    const nameRef = useRef<HTMLInputElement>(null);
+    const ageRef = useRef<HTMLInputElement>(null);
+    const countryRef = useRef<HTMLInputElement>(null);
+
     const fetchAthletes = useCallback(() => {
         let url = `http://localhost:8080/athletes?page=${page}&size=${athletesPerPage}`;
         if (selectedCountry) {
@@ -27,6 +33,30 @@ function AthletesPage() {
     useEffect(() => {
         fetchAthletes();
     }, [fetchAthletes])
+
+  const addAthlete = () => {
+  const newAthlete = {
+    name: nameRef.current?.value,
+    age: Number(ageRef.current?.value),
+    country: countryRef.current?.value
+  };
+
+  fetch("http://localhost:8080/athletes", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify(newAthlete)
+  })
+    .then(res => res.json())
+    .then(() => {
+      fetchAthletes(); // refresh list
+      if (nameRef.current) nameRef.current.value = "";
+      if (ageRef.current) ageRef.current.value = "";
+      if (countryRef.current) countryRef.current.value = "";
+    });
+};
+
   return (
     <div>
       <h2>Athletes</h2>
@@ -46,6 +76,16 @@ function AthletesPage() {
         <button onClick={() => setPage(p => p + 1)} disabled={page + 1 >= totalPages}>Next</button>
         <button onClick={() => setPage(totalPages - 1)} disabled={page + 1 >= totalPages}>Last</button>
     </div>
+    <div className='mb-4'>
+  <h4>Add New Athlete</h4>
+  <label>Name</label>
+  <input type="text" ref={nameRef} className="form-control mb-2" />
+  <label>Age</label>
+  <input type="number" ref={ageRef} className="form-control mb-2" />
+  <label>Country</label>
+  <input type="text" ref={countryRef} className="form-control mb-2" />
+  <button onClick={addAthlete} className="btn btn-success">Add Athlete</button>
+</div>
       <table className='table table-bordered table-striped'>
         <thead>
             <tr>
@@ -54,6 +94,7 @@ function AthletesPage() {
                 <th>Age</th>
                 <th>Total Points</th>
                 <th>Results</th>
+                <th>Edit</th>
             </tr>
         </thead>
       <tbody>
@@ -65,10 +106,18 @@ function AthletesPage() {
             <td>{athlete.totalPoints}</td>
             <td>
                 <ul>
-                {Object.entries(athlete.results).map(([event, points]) => (
-                    <li key={event}>{event}: {points} pts</li>
+{athlete.results && typeof athlete.results === 'object' && Object.entries(athlete.results).map(([event, points]) => (
+  <li key={event}>{event}: {points} pts</li>
               ))}
             </ul>
+            </td>
+            <td>
+                <button
+                  className="btn btn-sm btn-warning"
+                  onClick={() => window.location.href = `/athletes/edit/${athlete.id}`}>Edit
+                </button>
+              </td>
+              <td>
             </td>
           </tr>
         ))}

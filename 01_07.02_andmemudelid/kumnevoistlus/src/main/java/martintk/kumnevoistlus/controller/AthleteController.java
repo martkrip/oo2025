@@ -82,11 +82,54 @@ public class AthleteController {
         return athleteRepository.findAll();
     }
     @PutMapping("athletes")
-    public List<Athlete> editAthlete(@RequestBody Athlete athlete) {
-        if (athlete.getId() == null) {
+    public List<Athlete> editAthlete(@RequestBody Map<String, Object> body) {
+        Number idNum = (Number) body.get("id");
+        if (idNum == null) {
             throw new RuntimeException("ERROR_CANNOT_EDIT_WITHOUT_ID");
         }
+        Long id = idNum.longValue();
+
+        Athlete athlete = athleteRepository.findById(id).orElseThrow();
+
+        // Update simple fields
+        athlete.setName((String) body.get("name"));
+        athlete.setCountry((String) body.get("country"));
+
+        Number ageNum = (Number) body.get("age");
+        if (ageNum != null) {
+            athlete.setAge(ageNum.intValue());
+        }
+
+        // Convert results map safely
+        Map<String, Integer> results = new HashMap<>();
+        Object rawResultsObj = body.get("results");
+        if (rawResultsObj instanceof Map) {
+            Map<?, ?> rawResults = (Map<?, ?>) rawResultsObj;
+            for (Map.Entry<?, ?> entry : rawResults.entrySet()) {
+                String event = (String) entry.getKey();
+                Object value = entry.getValue();
+                if (value instanceof Number) {
+                    results.put(event, ((Number) value).intValue());
+                } else {
+                    // Handle invalid value types if needed
+                    throw new RuntimeException("Invalid points value for event: " + event);
+                }
+            }
+        }
+
+        // Save results to DB:
+        // For simplicity, delete old results and add new ones
+        resultRepository.deleteByAthlete(athlete);
+        results.forEach((event, points) -> {
+            Result result = new Result();
+            result.setAthlete(athlete);
+            result.setEvent(event);
+            result.setPoints(points);
+            resultRepository.save(result);
+        });
+
         athleteRepository.save(athlete);
+
         return athleteRepository.findAll();
     }
     @GetMapping("athletes/{id}")

@@ -5,6 +5,8 @@ import './App.css'
 import 'bootstrap/dist/css/bootstrap.min.css';
 import AthletesPage from './pages/AthletesPage';
 import ResultsPage from "./pages/ResultsPage";
+import EditAthlete from './pages/EditAthlete';
+
 
 function App() {
   return (
@@ -24,6 +26,7 @@ function App() {
           <Route path='/athletes' element={<AthletesPage />} />
           <Route path='/results' element={<ResultsPage />} />
           <Route path="/" element={<h1>Home page</h1>} />
+          <Route path="/athletes/edit/:id" element={<EditAthlete />} />
         </Routes>
       </Container>
     </div>

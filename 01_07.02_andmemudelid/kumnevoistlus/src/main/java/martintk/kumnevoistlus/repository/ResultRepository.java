@@ -8,4 +8,5 @@ import java.util.List;
 
 public interface ResultRepository extends JpaRepository<Result, Long> {
     List<Result> findByAthlete(Athlete athlete);
+    void deleteByAthlete(Athlete athlete);
 }
