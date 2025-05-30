@@ -4,8 +4,10 @@ import type { Athlete } from "../models/Athlete";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { useCallback } from 'react';
 import { useRef } from 'react';
+import { useTranslation } from 'react-i18next';
 
 function AthletesPage() {
+    const { t } = useTranslation();
     const [athletes, setAthletes] = useState<Athlete[]>([]);
     const [selectedCountry, setSelectedCountry] = useState<string | null>(null);
     const [page, setPage] = useState(0);
@@ -59,42 +61,42 @@ function AthletesPage() {
 
   return (
     <div>
-      <h2>Athletes</h2>
+      <h2>{t('athletes.title')}</h2>
     <div>
-        <button onClick={() => setSelectedCountry(null)}>All</button>
-        <button onClick={() => setSelectedCountry("Estonia")}>Estonia</button>
-        <button onClick={() => setSelectedCountry("Finland")}>Finland</button>
-        <button onClick={() => setSelectedCountry("USA")}>USA</button>
-        <button onClick={() => setSelectedCountry("Belarus")}>Belarus</button>
-        <button onClick={() => setSelectedCountry("Ukraine")}>Ukraine</button>
-        <button onClick={() => setSelectedCountry("Sweden")}>Sweden</button>
+        <button onClick={() => setSelectedCountry(null)}>{t('countries.all')}</button>
+        <button onClick={() => setSelectedCountry("Estonia")}>{t('countries.estonia')}</button>
+        <button onClick={() => setSelectedCountry("Finland")}>{t('countries.finland')}</button>
+        <button onClick={() => setSelectedCountry("USA")}>{t('countries.usa')}</button>
+        <button onClick={() => setSelectedCountry("Belarus")}>{t('countries.belarus')}</button>
+        <button onClick={() => setSelectedCountry("Ukraine")}>{t('countries.ukraine')}</button>
+        <button onClick={() => setSelectedCountry("Sweden")}>{t('countries.sweden')}</button>
     </div>
     <div>
-        <button onClick={() => setPage(0)} disabled={page === 0}>First</button>
-        <button onClick={() => setPage(p => p - 1)} disabled={page === 0}>Prev</button>
-        <span>Page {page + 1} of {totalPages}</span>
-        <button onClick={() => setPage(p => p + 1)} disabled={page + 1 >= totalPages}>Next</button>
-        <button onClick={() => setPage(totalPages - 1)} disabled={page + 1 >= totalPages}>Last</button>
+        <button onClick={() => setPage(0)} disabled={page === 0}>{t('pagination.first')}</button>
+        <button onClick={() => setPage(p => p - 1)} disabled={page === 0}>{t('pagination.prev')}</button>
+        <span>{t('pagination.page')} {page + 1} {t('pagination.of')} {totalPages}</span>
+        <button onClick={() => setPage(p => p + 1)} disabled={page + 1 >= totalPages}>{t('pagination.next')}</button>
+        <button onClick={() => setPage(totalPages - 1)} disabled={page + 1 >= totalPages}>{t('pagination.last')}</button>
     </div>
     <div className='mb-4'>
-  <h4>Add New Athlete</h4>
-  <label>Name</label>
+  <h4>{t('athletes.add-new')}</h4>
+  <label>{t('form.name')}</label>
   <input type="text" ref={nameRef} className="form-control mb-2" />
-  <label>Age</label>
+  <label>{t('form.age')}</label>
   <input type="number" ref={ageRef} className="form-control mb-2" />
-  <label>Country</label>
+  <label>{t('form.country')}</label>
   <input type="text" ref={countryRef} className="form-control mb-2" />
-  <button onClick={addAthlete} className="btn btn-success">Add Athlete</button>
+  <button onClick={addAthlete} className="btn btn-success">{t('athletes.add-button')}</button>
 </div>
       <table className='table table-bordered table-striped'>
         <thead>
             <tr>
-                <th>Name</th>
-                <th>Country</th>
-                <th>Age</th>
-                <th>Total Points</th>
-                <th>Results</th>
-                <th>Edit</th>
+                <th>{t('table.name')}</th>
+                <th>{t('table.country')}</th>
+                <th>{t('table.age')}</th>
+                <th>{t('table.total-points')}</th>
+                <th>{t('table.results')}</th>
+                <th>{t('table.edit')}</th>
             </tr>
         </thead>
       <tbody>
@@ -114,7 +116,7 @@ function AthletesPage() {
             <td>
                 <button
                   className="btn btn-sm btn-warning"
-                  onClick={() => window.location.href = `/athletes/edit/${athlete.id}`}>Edit
+                  onClick={() => window.location.href = `/athletes/edit/${athlete.id}`}>{t('table.edit')}
                 </button>
               </td>
               <td>

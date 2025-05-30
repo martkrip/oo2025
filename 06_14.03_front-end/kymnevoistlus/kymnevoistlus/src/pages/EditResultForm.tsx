@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
+import { useTranslation } from 'react-i18next';
 
 interface Result {
   id?: number;
@@ -22,6 +23,7 @@ const events = [
 ];
 
 const EditResultForm: React.FC<Props> = ({ athleteId }) => {
+  const { t } = useTranslation();
   const [results, setResults] = useState<Result[]>([]);
   const [selectedEvent, setSelectedEvent] = useState<string>('');
   const [inputResult, setInputResult] = useState<number>(0);
@@ -65,29 +67,29 @@ const EditResultForm: React.FC<Props> = ({ athleteId }) => {
     // Refresh results
     const refreshed = await axios.get<Result[]>('http://localhost:8080/results');
     setResults(refreshed.data.filter(r => r.athlete.id === athleteId));
-    alert('Result saved!');
+    alert(t('result-form.success'));
   };
 
   return (
     <div className="card p-3 mt-4">
-      <h5>Edit or Add Result</h5>
+      <h5>{t('result-form.title')}</h5>
 
       <div className="mb-2">
-        <label>Select Event:</label>
+        <label>{t('result-form.select-event')}</label>
         <select
           className="form-select"
           value={selectedEvent}
           onChange={e => setSelectedEvent(e.target.value)}
         >
-          <option value="">-- Select Event --</option>
+          <option value="">{t('result-form.placeholder-event')}</option>
           {events.map(event => (
-            <option key={event} value={event}>{event}</option>
+            <option key={event} value={event}>{t(`events.${event}`)}</option>
           ))}
         </select>
       </div>
 
       <div className="mb-2">
-        <label>Result:</label>
+        <label>{t('result-form.input-result')}</label>
         <input
           type="number"
           className="form-control"
@@ -97,7 +99,7 @@ const EditResultForm: React.FC<Props> = ({ athleteId }) => {
       </div>
 
       <button className="btn btn-primary" onClick={handleSubmit} disabled={!selectedEvent}>
-        {existingResultId ? 'Update Result' : 'Add Result'}
+        {existingResultId ? t('result-form.update-button') : t('result-form.add-button')}
       </button>
     </div>
   );

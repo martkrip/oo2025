@@ -1,10 +1,12 @@
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import type { Athlete } from "../models/Athlete";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import EditResultForm from './EditResultForm';
+import { useTranslation } from "react-i18next";
 
 function EditAthlete() {
+  const { t } = useTranslation();
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
 
@@ -27,7 +29,7 @@ function EditAthlete() {
 
     fetch(`http://localhost:8080/athletes/${id}`)
       .then(res => {
-        if (!res.ok) throw new Error("Failed to fetch athlete");
+        if (!res.ok) throw new Error(t("edit.error-fetch"));
         return res.json();
       })
       .then((data: Athlete) => {
@@ -39,7 +41,7 @@ function EditAthlete() {
       })
       .catch(err => setError(err.message))
       .finally(() => setLoading(false));
-  }, [id]);
+  }, [id, t]);
 
   const handleResultChange = (event: string, value: string) => {
     const parsed = Number(value);
@@ -68,25 +70,25 @@ function EditAthlete() {
       body: JSON.stringify(updatedAthlete)
     })
     .then(res => {
-      if (!res.ok) throw new Error("Failed to update athlete");
+      if (!res.ok) throw new Error(t("edit.error-update"));
       return res.json();
     })
     .then(() => {
       alert("Athlete updated successfully!");
       navigate("/athletes"); // go back to athletes list
     })
-    .catch(err => alert("Error: " + err.message));
+    .catch(err => alert(t("edit.fail") + ":" + err.message));
   };
 
-  if (loading) return <div>Loading athlete...</div>;
-  if (error) return <div className="text-danger">Error: {error}</div>;
-  if (!athlete) return <div>Athlete not found</div>;
+  if (loading) return <div>{t("edit.loading")}</div>;
+  if (error) return <div className="text-danger">{t("edit.error")}: {error}</div>;
+  if (!athlete) return <div>{t("edit.not-found")}</div>;
 
   return (
     <div>
-      <h2>Edit Athlete</h2>
+      <h2>{t("edit.title")}</h2>
       <form onSubmit={handleSubmit}>
-        <label>Name</label>
+        <label>{t("form.name")}</label>
         <input 
           type="text" 
           className="form-control mb-2" 
@@ -95,7 +97,7 @@ function EditAthlete() {
           required 
         />
 
-        <label>Age</label>
+        <label>{t("form.age")}</label>
         <input 
           type="number" 
           className="form-control mb-2" 
@@ -105,7 +107,7 @@ function EditAthlete() {
           required 
         />
 
-        <label>Country</label>
+        <label>{t("form.country")}</label>
         <input 
           type="text" 
           className="form-control mb-2" 
@@ -114,7 +116,7 @@ function EditAthlete() {
           required 
         />
 
-        <h4>Results</h4>
+        <h4>{t("edit.results")}</h4>
         {Object.entries(results).map(([event, points]) => (
           <div key={event} className="mb-2">
             <label>{event}</label>
@@ -131,7 +133,7 @@ function EditAthlete() {
           </div>
         ))}
 
-        <button type="submit" className="btn btn-primary mt-3">Save</button>
+        <button type="submit" className="btn btn-primary mt-3">{t("edit.save")}</button>
         <EditResultForm athleteId={Number(id)} />
       </form>
     </div>
